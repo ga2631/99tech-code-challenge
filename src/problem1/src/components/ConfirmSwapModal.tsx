@@ -81,13 +81,19 @@ export const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
             <div className="detail-row">
               <span>Exchange Rate</span>
               <span className="detail-val">
-                1 {quote.fromToken.symbol} = {formatRate(quote.rate)} {quote.toToken.symbol}
+                1 {quote.fromToken.symbol} = {formatRate(quote.effectiveRate)} {quote.toToken.symbol}
+              </span>
+            </div>
+            <div className="detail-row">
+              <span>Trading Fee ({quote.feePercent}%)</span>
+              <span className="detail-val">
+                {formatCryptoAmount(quote.feeAmount, 6)} {quote.fromToken.symbol} ({formatUsd(quote.feeUsd)})
               </span>
             </div>
             <div className="detail-row">
               <span>Guaranteed Minimum</span>
               <span className="detail-val">
-                {formatCryptoAmount(quote.minimumReceived)} {quote.toToken.symbol}
+                {formatCryptoAmount(quote.minimumReceived, 6)} {quote.toToken.symbol}
               </span>
             </div>
             <div className="detail-row">
@@ -95,7 +101,7 @@ export const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               <span className="detail-val">{quote.slippageTolerance}%</span>
             </div>
             <div className="detail-row">
-              <span>Network Fee</span>
+              <span>Network Gas Fee</span>
               <span className="detail-val">{formatUsd(quote.estimatedGasUsd)}</span>
             </div>
           </div>

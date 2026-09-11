@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { ArrowDownUp, Settings2 } from 'lucide-react';
+import { ArrowDownUp, Settings2, Sparkles } from 'lucide-react';
 import { Token, UserBalance, SlippageOption, SwapQuote, Transaction } from '../types/token';
 import { CurrencyInputCard } from './CurrencyInputCard';
 import { SwapDetails } from './SwapDetails';
@@ -7,7 +7,7 @@ import { TokenSelectModal } from './TokenSelectModal';
 import { SlippageSettingsModal } from './SlippageSettingsModal';
 import { ConfirmSwapModal } from './ConfirmSwapModal';
 import { TransactionStatusModal } from './TransactionStatusModal';
-import { formatCryptoAmount, generateMockTxHash } from '../utils/formatters';
+import { formatCryptoAmount, generateMockTxHash, parseNumericInput, toCleanDecimalString } from '../utils/formatters';
 
 interface SwapFormProps {
   tokens: Token[];
@@ -15,6 +15,7 @@ interface SwapFormProps {
   onUpdateBalances: (newBalances: UserBalance) => void;
   onAddTransaction: (tx: Transaction) => void;
   isLoadingTokens: boolean;
+  onResetBalances?: () => void;
 }
 
 export const SwapForm: React.FC<SwapFormProps> = ({
@@ -23,6 +24,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({
   onUpdateBalances,
   onAddTransaction,
   isLoadingTokens,
+  onResetBalances,
 }) => {
   const [fromToken, setFromToken] = useState<Token | null>(null);
   const [toToken, setToToken] = useState<Token | null>(null);
@@ -57,25 +59,83 @@ export const SwapForm: React.FC<SwapFormProps> = ({
 
   const effectiveSlippage = useMemo(() => {
     if (slippage === 'custom') {
-      const parsed = parseFloat(customSlippage);
-      return isNaN(parsed) || parsed <= 0 ? 0.5 : parsed;
+      const parsed = parseNumericInput(customSlippage);
+      return parsed <= 0 ? 0.5 : parsed;
     }
     return slippage;
   }, [slippage, customSlippage]);
 
-  // Derived calculation
-  const parsedFromAmount = parseFloat(fromAmount) || 0;
-  const fromBalance = fromToken ? balances[fromToken.symbol] || 0 : 0;
-  const toBalance = toToken ? balances[toToken.symbol] || 0 : 0;
+  // Derived balance calculation with numeric parsing
+  const parsedFromAmount = parseNumericInput(fromAmount);
+  const fromBalance = fromToken ? (balances[fromToken.symbol] !== undefined ? balances[fromToken.symbol] : 1000) : 0;
+  const toBalance = toToken ? (balances[toToken.symbol] !== undefined ? balances[toToken.symbol] : 1000) : 0;
 
+  // Comprehensive Form Validation Logic
+  const validation = useMemo(() => {
+    if (isLoadingTokens) {
+      return { isValid: false, buttonText: 'Loading token rates...', inputError: null };
+    }
+    if (!fromToken || !toToken) {
+      return { isValid: false, buttonText: 'Select tokens', inputError: null };
+    }
+    if (fromToken.symbol === toToken.symbol) {
+      return { isValid: false, buttonText: 'Select different tokens', inputError: 'Source and target tokens must be different' };
+    }
+    if (!fromToken.price || fromToken.price <= 0 || !toToken.price || toToken.price <= 0) {
+      return { isValid: false, buttonText: 'Rate unavailable', inputError: 'Live price feed unavailable for selected pair' };
+    }
+    if (effectiveSlippage <= 0 || effectiveSlippage > 50) {
+      return { isValid: false, buttonText: 'Invalid slippage (0.01% - 50%)', inputError: null };
+    }
+    if (fromAmount === '') {
+      return { isValid: false, buttonText: 'Enter an amount', inputError: null };
+    }
+    if (isNaN(parsedFromAmount) || parsedFromAmount <= 0) {
+      return { isValid: false, buttonText: 'Enter a positive amount', inputError: 'Amount must be greater than 0' };
+    }
+
+    // Decimal precision check
+    const rawVal = fromAmount.replace(/,/g, '');
+    if (rawVal.includes('.')) {
+      const decimals = rawVal.split('.')[1]?.length || 0;
+      if (decimals > fromToken.decimals) {
+        return {
+          isValid: false,
+          buttonText: `Max ${fromToken.decimals} decimal places`,
+          inputError: `Exceeded maximum ${fromToken.decimals} decimals for ${fromToken.symbol}`,
+        };
+      }
+    }
+
+    // Insufficient Balance check (with small epsilon for float precision safety)
+    if (parsedFromAmount > fromBalance + 1e-9) {
+      return {
+        isValid: false,
+        buttonText: `Insufficient ${fromToken.symbol} balance`,
+        inputError: `Insufficient balance (Available: ${formatCryptoAmount(fromBalance, 6, 6)} ${fromToken.symbol})`,
+      };
+    }
+
+    return { isValid: true, buttonText: 'Swap Tokens', inputError: null };
+  }, [isLoadingTokens, fromToken, toToken, fromAmount, parsedFromAmount, fromBalance, effectiveSlippage]);
+
+  // Quote computation with DEX trading fee (0.25%)
   const quote: SwapQuote | null = useMemo(() => {
-    if (!fromToken || !toToken || parsedFromAmount <= 0) {
+    if (!fromToken || !toToken || parsedFromAmount <= 0 || !fromToken.price || !toToken.price) {
       return null;
     }
 
-    const rate = fromToken.price / toToken.price;
-    const inverseRate = toToken.price / fromToken.price;
-    const toAmount = parsedFromAmount * rate;
+    const FEE_PERCENT = 0.25; // Standard 0.25% liquidity provider / protocol fee
+    const feeAmount = parsedFromAmount * (FEE_PERCENT / 100);
+    const feeUsd = feeAmount * fromToken.price;
+    const effectiveFromAmount = Math.max(0, parsedFromAmount - feeAmount);
+
+    const nominalRate = fromToken.price / toToken.price;
+    const grossToAmount = parsedFromAmount * nominalRate;
+    const toAmount = effectiveFromAmount * nominalRate;
+
+    const effectiveRate = parsedFromAmount > 0 ? toAmount / parsedFromAmount : nominalRate;
+    const inverseRate = toAmount > 0 ? parsedFromAmount / toAmount : 1 / nominalRate;
     const slippageMultiplier = 1 - effectiveSlippage / 100;
     const minimumReceived = toAmount * slippageMultiplier;
 
@@ -88,7 +148,12 @@ export const SwapForm: React.FC<SwapFormProps> = ({
       toToken,
       fromAmount: parsedFromAmount,
       toAmount,
-      rate,
+      grossToAmount,
+      feePercent: FEE_PERCENT,
+      feeAmount,
+      feeUsd,
+      rate: nominalRate,
+      effectiveRate,
       inverseRate,
       priceImpact,
       minimumReceived,
@@ -100,35 +165,23 @@ export const SwapForm: React.FC<SwapFormProps> = ({
 
   const toAmountString = quote ? formatCryptoAmount(quote.toAmount, 6) : '';
 
-  // Form Validations
-  const validationError = useMemo(() => {
-    if (isLoadingTokens) return 'Loading token rates...';
-    if (!fromToken || !toToken) return 'Select tokens';
-    if (fromToken.symbol === toToken.symbol) return 'Select different tokens';
-    if (!fromAmount || parsedFromAmount <= 0) return 'Enter an amount';
-    if (parsedFromAmount > fromBalance) return `Insufficient ${fromToken.symbol} balance`;
-    return null;
-  }, [isLoadingTokens, fromToken, toToken, fromAmount, parsedFromAmount, fromBalance]);
-
-  const isFormValid = validationError === null && quote !== null;
-
   // Actions
   const handleFlipTokens = () => {
-    const tempToken = fromToken;
-    setFromToken(toToken);
-    setToToken(tempToken);
+    const tempFromToken = fromToken;
+    const tempToToken = toToken;
+    setFromToken(tempToToken);
+    setToToken(tempFromToken);
 
-    // If there was an output amount, make it the new input amount
+    // If there was an output amount, make it the new input amount formatted cleanly without commas
     if (quote && quote.toAmount > 0) {
-      setFromAmount(quote.toAmount.toFixed(4));
+      setFromAmount(toCleanDecimalString(quote.toAmount, tempToToken ? Math.min(tempToToken.decimals, 6) : 6, true));
     }
   };
 
   const handleSelectQuickPercent = (pct: number) => {
     if (!fromToken) return;
     const targetAmount = fromBalance * pct;
-    // Format nicely without excessive precision
-    setFromAmount(targetAmount > 0 ? targetAmount.toFixed(4) : '0');
+    setFromAmount(toCleanDecimalString(targetAmount, Math.min(fromToken.decimals, 6), true));
   };
 
   const handleSelectToken = (token: Token) => {
@@ -153,16 +206,21 @@ export const SwapForm: React.FC<SwapFormProps> = ({
 
     setIsExecuting(true);
     const mockHash = generateMockTxHash();
+    const fromQty = quote.fromAmount;
+    const toQty = quote.toAmount;
+
     const newTx: Transaction = {
       id: Date.now().toString(),
       hash: mockHash,
       fromSymbol: fromToken.symbol,
       toSymbol: toToken.symbol,
-      fromAmount: quote.fromAmount,
-      toAmount: quote.toAmount,
-      fromUsd: quote.fromAmount * fromToken.price,
-      toUsd: quote.toAmount * toToken.price,
-      rate: quote.rate,
+      fromAmount: fromQty,
+      toAmount: toQty,
+      fromUsd: fromQty * fromToken.price,
+      toUsd: toQty * toToken.price,
+      feeAmount: quote.feeAmount,
+      feeUsd: quote.feeUsd,
+      rate: quote.effectiveRate,
       timestamp: Date.now(),
       status: 'pending',
     };
@@ -173,10 +231,17 @@ export const SwapForm: React.FC<SwapFormProps> = ({
 
     // Simulate asynchronous blockchain transaction processing
     setTimeout(() => {
-      // Update balances
+      // Update balances using exact numbers with clean float precision
       const newBalances = { ...balances };
-      newBalances[fromToken.symbol] = Math.max(0, (newBalances[fromToken.symbol] || 0) - quote.fromAmount);
-      newBalances[toToken.symbol] = (newBalances[toToken.symbol] || 0) + quote.toAmount;
+      const currentFrom = balances[fromToken.symbol] !== undefined ? balances[fromToken.symbol] : fromBalance;
+      const currentTo = balances[toToken.symbol] !== undefined ? balances[toToken.symbol] : toBalance;
+
+      const diff = currentFrom - fromQty;
+      const nextFrom = diff < 1e-6 ? 0 : diff;
+      const nextTo = currentTo + toQty;
+
+      newBalances[fromToken.symbol] = nextFrom < 1e-6 ? 0 : parseFloat(nextFrom.toFixed(8));
+      newBalances[toToken.symbol] = nextTo < 1e-6 ? 0 : parseFloat(nextTo.toFixed(8));
       onUpdateBalances(newBalances);
 
       // Record transaction
@@ -188,8 +253,8 @@ export const SwapForm: React.FC<SwapFormProps> = ({
 
       // Reset input
       setFromAmount('');
-    }, 2200);
-  }, [quote, fromToken, toToken, balances, onUpdateBalances, onAddTransaction]);
+    }, 2000);
+  }, [quote, fromToken, toToken, balances, fromBalance, toBalance, onUpdateBalances, onAddTransaction]);
 
   return (
     <div className="swap-card">
@@ -218,7 +283,8 @@ export const SwapForm: React.FC<SwapFormProps> = ({
         onAmountChange={setFromAmount}
         onOpenSelectToken={() => setIsSelectingFor('from')}
         balance={fromBalance}
-        hasError={parsedFromAmount > fromBalance}
+        hasError={validation.inputError !== null}
+        errorMessage={validation.inputError}
         onQuickPercent={handleSelectQuickPercent}
       />
 
@@ -250,11 +316,11 @@ export const SwapForm: React.FC<SwapFormProps> = ({
       {/* Submit Button */}
       <button
         type="button"
-        className={`swap-action-button ${validationError && fromAmount ? 'btn-error' : ''}`}
-        disabled={!isFormValid}
+        className={`swap-action-button ${!validation.isValid && fromAmount ? 'btn-error' : ''}`}
+        disabled={!validation.isValid}
         onClick={() => setIsConfirmOpen(true)}
       >
-        {validationError || 'Swap Tokens'}
+        {validation.buttonText}
       </button>
 
       {/* Modals */}

@@ -25,7 +25,12 @@ export interface SwapQuote {
   toToken: Token;
   fromAmount: number;
   toAmount: number;
+  grossToAmount: number;
+  feePercent: number;
+  feeAmount: number;
+  feeUsd: number;
   rate: number;
+  effectiveRate: number;
   inverseRate: number;
   priceImpact: number;
   minimumReceived: number;
@@ -43,6 +48,8 @@ export interface Transaction {
   toAmount: number;
   fromUsd: number;
   toUsd: number;
+  feeAmount: number;
+  feeUsd: number;
   rate: number;
   timestamp: number;
   status: 'pending' | 'success' | 'failed';

@@ -11,7 +11,7 @@ export const SwapDetails: React.FC<SwapDetailsProps> = ({ quote }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showInverseRate, setShowInverseRate] = useState(false);
 
-  const currentRate = showInverseRate ? quote.inverseRate : quote.rate;
+  const currentRate = showInverseRate ? quote.inverseRate : quote.effectiveRate;
   const fromSymbol = showInverseRate ? quote.toToken.symbol : quote.fromToken.symbol;
   const toSymbol = showInverseRate ? quote.fromToken.symbol : quote.toToken.symbol;
 
@@ -48,10 +48,17 @@ export const SwapDetails: React.FC<SwapDetailsProps> = ({ quote }) => {
         <div className="details-expanded-list">
           <div className="detail-row">
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              <Info size={12} /> Expected Output
+              <Info size={12} /> Expected Output (Net)
             </span>
+            <span className="detail-val" style={{ color: 'var(--accent-emerald)' }}>
+              {formatCryptoAmount(quote.toAmount, 6)} {quote.toToken.symbol}
+            </span>
+          </div>
+
+          <div className="detail-row">
+            <span>Trading Fee ({quote.feePercent}%)</span>
             <span className="detail-val">
-              {formatCryptoAmount(quote.toAmount)} {quote.toToken.symbol}
+              {formatCryptoAmount(quote.feeAmount, 6)} {quote.fromToken.symbol} ({formatUsd(quote.feeUsd)})
             </span>
           </div>
 
@@ -65,12 +72,12 @@ export const SwapDetails: React.FC<SwapDetailsProps> = ({ quote }) => {
           <div className="detail-row">
             <span>Minimum Received (after {quote.slippageTolerance}%)</span>
             <span className="detail-val">
-              {formatCryptoAmount(quote.minimumReceived)} {quote.toToken.symbol}
+              {formatCryptoAmount(quote.minimumReceived, 6)} {quote.toToken.symbol}
             </span>
           </div>
 
           <div className="detail-row">
-            <span>Network Fee (Estimated)</span>
+            <span>Network Gas Fee (Estimated)</span>
             <span className="detail-val">{formatUsd(quote.estimatedGasUsd)}</span>
           </div>
 

@@ -7,8 +7,8 @@ import { INITIAL_USER_BALANCES } from './constants/tokens';
 import { fetchTokenPrices } from './services/priceService';
 import { formatUsd } from './utils/formatters';
 
-const BALANCES_STORAGE_KEY = 'novaswap_user_balances_v1';
-const TXS_STORAGE_KEY = 'novaswap_transactions_v1';
+const BALANCES_STORAGE_KEY = 'currencyswap_user_balances_v2';
+const TXS_STORAGE_KEY = 'currencyswap_transactions_v2';
 
 export function App() {
   const [tokens, setTokens] = useState<Token[]>([]);
@@ -17,11 +17,14 @@ export function App() {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState<boolean>(false);
 
-  // Load persisted balances or default
+  // Load persisted balances or default, ensuring every token has a non-zero mock balance
   const [balances, setBalances] = useState<UserBalance>(() => {
     try {
       const saved = localStorage.getItem(BALANCES_STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return { ...INITIAL_USER_BALANCES, ...parsed };
+      }
     } catch {
       // ignore
     }
@@ -47,6 +50,11 @@ export function App() {
     } catch {
       // ignore
     }
+  };
+
+  // Reset balances to full initial balances
+  const handleResetBalances = () => {
+    handleUpdateBalances(INITIAL_USER_BALANCES);
   };
 
   // Add transaction
@@ -88,6 +96,38 @@ export function App() {
     }
   }, []);
 
+  // Reset entire application data (balances, transactions, price feeds) back to default
+  const handleResetAllData = useCallback(async () => {
+    setIsRefreshing(true);
+    // 1. Reset balances
+    setBalances(INITIAL_USER_BALANCES);
+    try {
+      localStorage.setItem(BALANCES_STORAGE_KEY, JSON.stringify(INITIAL_USER_BALANCES));
+    } catch {
+      // ignore
+    }
+
+    // 2. Clear transaction history
+    setTransactions([]);
+    try {
+      localStorage.removeItem(TXS_STORAGE_KEY);
+      localStorage.removeItem('novaswap_transactions_v1');
+    } catch {
+      // ignore
+    }
+
+    // 3. Reload live prices
+    try {
+      const { tokens: fetchedTokens, lastUpdated: updatedTime } = await fetchTokenPrices();
+      setTokens(fetchedTokens);
+      setLastUpdated(updatedTime);
+    } catch (err) {
+      console.error('Error fetching token prices during reset:', err);
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 500);
+    }
+  }, []);
+
   // Initial load & 60-second polling
   useEffect(() => {
     loadPrices();
@@ -122,8 +162,8 @@ export function App() {
       <Header
         portfolioUsd={portfolioUsd}
         lastUpdated={lastUpdated}
-        onRefreshPrices={() => loadPrices(true)}
-        isRefreshing={isRefreshing}
+        onResetData={handleResetAllData}
+        isResetting={isRefreshing}
         onOpenHistory={() => setIsHistoryOpen(true)}
         onOpenSettings={() => {}}
         txCount={transactions.length}
@@ -158,6 +198,7 @@ export function App() {
           onUpdateBalances={handleUpdateBalances}
           onAddTransaction={handleAddTransaction}
           isLoadingTokens={isLoadingTokens}
+          onResetBalances={handleResetBalances}
         />
 
         {/* Live Token Marquee / Ticker */}

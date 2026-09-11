@@ -1,8 +1,8 @@
 import React from 'react';
-import { ChevronDown, Wallet } from 'lucide-react';
+import { ChevronDown, Wallet, AlertCircle } from 'lucide-react';
 import { Token } from '../types/token';
 import { TokenImage } from './TokenImage';
-import { formatCryptoAmount, formatUsd } from '../utils/formatters';
+import { formatCryptoAmount, formatUsd, parseNumericInput } from '../utils/formatters';
 
 interface CurrencyInputCardProps {
   label: string;
@@ -13,6 +13,7 @@ interface CurrencyInputCardProps {
   balance: number;
   readOnly?: boolean;
   hasError?: boolean;
+  errorMessage?: string | null;
   onQuickPercent?: (pct: number) => void;
   loading?: boolean;
 }
@@ -26,18 +27,26 @@ export const CurrencyInputCard: React.FC<CurrencyInputCardProps> = ({
   balance,
   readOnly = false,
   hasError = false,
+  errorMessage = null,
   onQuickPercent,
   loading = false,
 }) => {
-  const numericAmount = parseFloat(amount) || 0;
+  const numericAmount = parseNumericInput(amount);
   const usdValue = token ? numericAmount * token.price : 0;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value;
+    let val = e.target.value.replace(/,/g, '').trim();
     // Allow empty or valid decimal numbers only
     if (val === '' || /^[0-9]*\.?[0-9]*$/.test(val)) {
       if (val.startsWith('.')) {
         val = '0' + val;
+      }
+      // Limit decimal precision if token is defined
+      if (token && val.includes('.')) {
+        const decimals = val.split('.')[1];
+        if (decimals && decimals.length > token.decimals) {
+          return; // Don't allow typing beyond max decimals
+        }
       }
       onAmountChange?.(val);
     }
@@ -48,10 +57,15 @@ export const CurrencyInputCard: React.FC<CurrencyInputCardProps> = ({
       <div className="input-top-row">
         <span className="input-label">{label}</span>
         {token && (
-          <div className="input-balance">
+          <div
+            className="input-balance"
+            style={{ cursor: !readOnly && onQuickPercent ? 'pointer' : 'default' }}
+            onClick={() => !readOnly && onQuickPercent && onQuickPercent(1.0)}
+            title={!readOnly ? 'Click to fill max balance' : undefined}
+          >
             <Wallet size={12} />
             <span>
-              Bal: {formatCryptoAmount(balance)} {token.symbol}
+              Bal: {formatCryptoAmount(balance, 6, 6)} {token.symbol}
             </span>
           </div>
         )}
@@ -92,7 +106,7 @@ export const CurrencyInputCard: React.FC<CurrencyInputCardProps> = ({
           {loading ? 'Calculating...' : `≈ ${formatUsd(usdValue)}`}
         </span>
 
-        {onQuickPercent && balance > 0 && !readOnly && (
+        {onQuickPercent && !readOnly && (
           <div className="percentage-chips">
             <button type="button" className="chip-btn" onClick={() => onQuickPercent(0.25)}>
               25%
@@ -109,6 +123,14 @@ export const CurrencyInputCard: React.FC<CurrencyInputCardProps> = ({
           </div>
         )}
       </div>
+
+      {/* Inline Validation Error */}
+      {errorMessage && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.5rem', color: 'var(--accent-rose)', fontSize: '0.75rem', fontWeight: 500 }}>
+          <AlertCircle size={13} />
+          <span>{errorMessage}</span>
+        </div>
+      )}
     </div>
   );
 };

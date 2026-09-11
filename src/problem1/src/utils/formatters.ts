@@ -1,5 +1,51 @@
+export function parseNumericInput(val: string | number | undefined | null): number {
+  if (val === undefined || val === null || val === '') return 0;
+  if (typeof val === 'number') {
+    if (isNaN(val) || Math.abs(val) < 1e-6) return 0;
+    return val;
+  }
+  // Strip all thousands separator commas and whitespace
+  const cleaned = val.replace(/,/g, '').trim();
+  const num = parseFloat(cleaned);
+  if (isNaN(num) || Math.abs(num) < 1e-6) return 0;
+  return num;
+}
+
+export function truncateDecimals(val: number, maxDecimals: number = 6): number {
+  if (isNaN(val) || val === 0 || Math.abs(val) < 1e-6) return 0;
+  const factor = Math.pow(10, maxDecimals);
+  const res = Math.floor(val * factor + 1e-12) / factor;
+  return Math.abs(res) < 1e-6 ? 0 : res;
+}
+
+export function toCleanDecimalString(val: number, maxDecimals: number = 6, truncate: boolean = false): string {
+  if (isNaN(val) || val === 0 || Math.abs(val) < 1e-6) return '0';
+  if (truncate) {
+    const floored = truncateDecimals(val, maxDecimals);
+    return floored === 0 || Math.abs(floored) < 1e-6 ? '0' : floored.toString();
+  }
+  const fixed = val.toFixed(maxDecimals);
+  const num = parseFloat(fixed);
+  // Remove trailing zeros after decimal point
+  return Math.abs(num) < 1e-6 ? '0' : num.toString();
+}
+
+export function formatCryptoAmount(
+  val: number,
+  maxDecimals: number = 6,
+  minDecimals: number = 0
+): string {
+  if (isNaN(val) || val === 0 || Math.abs(val) < 1e-6) {
+    return minDecimals > 0 ? (0).toFixed(minDecimals) : '0';
+  }
+  return val.toLocaleString('en-US', {
+    minimumFractionDigits: minDecimals,
+    maximumFractionDigits: maxDecimals,
+  });
+}
+
 export function formatUsd(val: number): string {
-  if (isNaN(val) || val === 0) return '$0.00';
+  if (isNaN(val) || val === 0 || Math.abs(val) < 1e-6) return '$0.00';
   if (val < 0.0001) return `< $0.0001`;
   if (val < 1) {
     return `$${val.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
@@ -7,20 +53,8 @@ export function formatUsd(val: number): string {
   return `$${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-export function formatCryptoAmount(val: number, maxDecimals: number = 6): string {
-  if (isNaN(val) || val === 0) return '0';
-  if (val < 0.000001) {
-    return val.toExponential(4);
-  }
-  const formatted = val.toLocaleString('en-US', {
-    maximumFractionDigits: maxDecimals,
-    minimumFractionDigits: 0,
-  });
-  return formatted;
-}
-
 export function formatRate(val: number): string {
-  if (isNaN(val) || val === 0) return '0';
+  if (isNaN(val) || val === 0 || Math.abs(val) < 1e-6) return '0';
   if (val < 0.0001) return val.toExponential(4);
   if (val < 1) return val.toFixed(6);
   if (val < 100) return val.toFixed(4);

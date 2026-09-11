@@ -138,7 +138,7 @@ export const TokenSelectModal: React.FC<TokenSelectModalProps> = ({
                   <div className="token-item-right">
                     <span className="item-price">{formatUsd(token.price)}</span>
                     <span className="item-balance">
-                      {balance > 0 ? `${formatCryptoAmount(balance)} ${token.symbol}` : '0.00'}
+                      {formatCryptoAmount(balance, 6, 6)} {token.symbol}
                     </span>
                   </div>
 

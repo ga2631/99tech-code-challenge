@@ -1,13 +1,13 @@
 import React from 'react';
-import { RefreshCw, History, Settings, Wallet } from 'lucide-react';
+import { RotateCcw, History, Settings, Wallet } from 'lucide-react';
 import { formatUsd } from '../utils/formatters';
 import { BASE_TOKEN_ICON_URL } from '../constants/tokens';
 
 interface HeaderProps {
   portfolioUsd: number;
   lastUpdated: Date | null;
-  onRefreshPrices: () => void;
-  isRefreshing: boolean;
+  onResetData: () => void;
+  isResetting: boolean;
   onOpenHistory: () => void;
   onOpenSettings: () => void;
   txCount: number;
@@ -15,8 +15,8 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({
   portfolioUsd,
-  onRefreshPrices,
-  isRefreshing,
+  onResetData,
+  isResetting,
   onOpenHistory,
   onOpenSettings,
   txCount,
@@ -35,15 +35,25 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       <div className="header-actions">
-        <button
-          type="button"
-          className="icon-button"
-          onClick={onRefreshPrices}
-          disabled={isRefreshing}
-          title="Refresh token prices"
-        >
-          <RefreshCw size={16} className={isRefreshing ? 'spinner' : ''} />
-        </button>
+        {/* Reset Data Button with Explanatory Tooltip */}
+        <div className="tooltip-wrapper">
+          <button
+            type="button"
+            className="icon-button"
+            onClick={onResetData}
+            disabled={isResetting}
+            aria-label="Reset all data to default"
+          >
+            <RotateCcw size={16} className={isResetting ? 'spinner' : ''} />
+          </button>
+          <div className="tooltip-content">
+            <div className="tooltip-header">
+              <RotateCcw size={13} style={{ color: 'var(--accent-cyan)' }} />
+              <span>Reset All Data</span>
+            </div>
+            <div>Khôi phục toàn bộ số dư ví, lịch sử giao dịch và dữ liệu tỷ giá về trạng thái mặc định ban đầu.</div>
+          </div>
+        </div>
 
         <div className="wallet-badge" title="Total Mock Wallet Value">
           <Wallet size={14} style={{ color: 'var(--primary-500)' }} />
