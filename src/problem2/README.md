@@ -2,13 +2,13 @@
 
 An interactive, responsive cryptocurrency swap interface built with **React**, **TypeScript**, and **Vite**.
 
-![NovaSwap Preview](https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/SWTH.svg)
+![NovaSwap Preview](./public/tokens/SWTH.svg)
 
 ---
 
 ## 🌟 Key Features
 
-- **⚡ Real-time Price Feeds:** Live token price data ingested and deduplicated from `https://interview.switcheo.com/prices.json`.
+- **⚡ Real-time Price Feeds:** Live token price data ingested and deduplicated with offline local fallback (`/prices.json`).
 - **🎨 Modern Web3 Aesthetics:** Obsidian dark mode, glassmorphism cards, glowing vibrant gradients, and micro-animations.
 - **🔍 Interactive Token Selector:** Quick search by token symbol or name, popular token tags, live balances, and brand icons with graceful fallback.
 - **🔄 Instant Exchange Rate Calculation:** Real-time conversion, inverse rate toggle, and USD value estimations.

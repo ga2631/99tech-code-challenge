@@ -6,7 +6,7 @@ The **NovaSwap** currency swap application facilitates asset exchanges across mu
 
 ```mermaid
 flowchart TD
-    A["Switcheo Prices API<br/>(https://interview.switcheo.com/prices.json)"] -->|Poll / Fetch| B["Price Service & Deduplication Layer<br/>(priceService.ts)"]
+    A["Price Ingestion Layer<br/>(Live Feed & Local /prices.json)"] -->|Poll / Fetch| B["Price Service & Deduplication Layer<br/>(priceService.ts)"]
     B -->|Filtered & Normalized Tokens| C["Global State (App.tsx)<br/>Portfolio Balance & Price Map"]
     C --> D["Swap Controller (SwapForm.tsx)<br/>Dynamic Quote & Validation Engine"]
     
@@ -21,9 +21,9 @@ flowchart TD
 ```
 
 1. **Price Ingestion & Deduplication:**
-   - On initial mount and recurring 60s intervals, `priceService.ts` queries the Switcheo live price endpoint.
+   - On initial mount and recurring 60s intervals, `priceService.ts` queries the price endpoint with automatic fallback to bundled local datasets (`/prices.json`) when operating in offline environments.
    - The ingestion algorithm maps tokens by currency symbol, resolving duplicate entries by preserving only the latest ISO timestamp record with a valid positive price.
-   - Token metadata (name, decimals, brand color, SVG icon URL) is attached.
+   - Local token metadata (name, decimals, brand color, and local `/tokens/${symbol}.svg` icon) is attached.
 
 2. **User Input, Fee Accounting & Real-Time Calculation:**
    - As the user types in `CurrencyInputCard`, the swap controller calculates the gross and net output amounts considering the **0.25% DEX liquidity provider / protocol trading fee**:
