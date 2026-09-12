@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { ArrowDownUp, Settings2, Sparkles } from 'lucide-react';
+import { ArrowDownUp, Settings2, History } from 'lucide-react';
 import { Token, UserBalance, SlippageOption, SwapQuote, Transaction } from '../types/token';
 import { CurrencyInputCard } from './CurrencyInputCard';
 import { SwapDetails } from './SwapDetails';
@@ -15,7 +15,8 @@ interface SwapFormProps {
   onUpdateBalances: (newBalances: UserBalance) => void;
   onAddTransaction: (tx: Transaction) => void;
   isLoadingTokens: boolean;
-  onResetBalances?: () => void;
+  onOpenHistory?: () => void;
+  txCount?: number;
 }
 
 export const SwapForm: React.FC<SwapFormProps> = ({
@@ -24,7 +25,8 @@ export const SwapForm: React.FC<SwapFormProps> = ({
   onUpdateBalances,
   onAddTransaction,
   isLoadingTokens,
-  onResetBalances,
+  onOpenHistory,
+  txCount = 0,
 }) => {
   const [fromToken, setFromToken] = useState<Token | null>(null);
   const [toToken, setToToken] = useState<Token | null>(null);
@@ -272,6 +274,39 @@ export const SwapForm: React.FC<SwapFormProps> = ({
           >
             <Settings2 size={16} />
           </button>
+
+          {onOpenHistory && (
+            <button
+              type="button"
+              className="icon-button"
+              onClick={onOpenHistory}
+              title="Transaction History"
+              style={{ position: 'relative' }}
+            >
+              <History size={16} />
+              {txCount > 0 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '-4px',
+                    right: '-4px',
+                    background: 'var(--primary-500)',
+                    color: 'white',
+                    fontSize: '0.625rem',
+                    fontWeight: 700,
+                    width: '16px',
+                    height: '16px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {txCount}
+                </span>
+              )}
+            </button>
+          )}
         </div>
       </div>
 

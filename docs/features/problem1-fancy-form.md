@@ -93,6 +93,7 @@ While this challenge operates purely on the client-side with mock blockchain sim
 ## 3. Technical Optimizations
 
 - **Vite 6 & TypeScript Strict Mode:** Bundled using Vite ES modules with strict TypeScript checking (`noUnusedLocals`, `noUnusedParameters`), achieving a minified, gzipped bundle footprint (~59 kB JS, ~3.7 kB CSS).
+- **Interactive Wallet Assets Popover (USDC Base Currency):** Hovering over the total portfolio wallet badge displays a glassmorphic flyout popover detailing all held tokens with positive balances ($> 0$), ranked descending by total **USDC** valuation, with token logos, individual crypto quantities, live unit prices in **USDC**, and total **USDC** values (e.g. `25,123.45 USDC` instead of `$`).
 - **Safe Numeric Parsing & Precision Handling:** Added `parseNumericInput` and `toCleanDecimalString` to eliminate JavaScript `parseFloat("9,052.64") === 9` delimiter truncation bugs, ensuring exact integer/float math when dealing with formatted thousand-separator strings.
 - **Dust & Tiny Number Normalization (< $10^{-6}$):** Any residual micro-amounts or floating-point dust (e.g., `< 1e-6` / `...e-7`) resulting from repetitive conversions are automatically rounded/normalized to `= 0`, preventing awkward scientific notation displays (`4.0000e-7`) and ensuring clean `0.000000` balances.
 - **Unified High-Precision Crypto Formatting:** Consolidated all number & balance displays into a flexible `formatCryptoAmount(val, maxDecimals, minDecimals)` helper, supporting exact 6-decimal fixed-width formatting for balances (`formatCryptoAmount(balance, 6, 6)`) and dynamic precision for swap amounts without code duplication.
@@ -114,7 +115,7 @@ While this challenge operates purely on the client-side with mock blockchain sim
 | `src/problem1/src/services/priceService.ts` | New | Live price fetching, fallback dataset, and timestamp deduplication. |
 | `src/problem1/src/utils/formatters.ts` | New | Currency, crypto amounts, percentages, and hash formatters. |
 | `src/problem1/src/styles/index.css` | New | Dark theme design tokens, glassmorphic styles, and animations. |
-| `src/problem1/src/components/Header.tsx` | New | Navbar with Reset All Data button (with hover tooltip), portfolio balance, history & settings triggers. |
+| `src/problem1/src/components/Header.tsx` | New | Navbar with Reset All Data button (with hover tooltip) and interactive Wallet held assets popover (USDC base currency). |
 | `src/problem1/src/components/TokenImage.tsx` | New | Dynamic token icon loader with fallback avatar. |
 | `src/problem1/src/components/TokenSelectModal.tsx` | New | Searchable token selector modal with popular chips. |
 | `src/problem1/src/components/CurrencyInputCard.tsx` | New | Amount input, balance display, and quick percentage chips. |
@@ -123,7 +124,7 @@ While this challenge operates purely on the client-side with mock blockchain sim
 | `src/problem1/src/components/ConfirmSwapModal.tsx` | New | Order summary and final review before execution. |
 | `src/problem1/src/components/TransactionStatusModal.tsx` | New | Transaction progress spinner and success receipt. |
 | `src/problem1/src/components/TransactionHistoryModal.tsx` | New | Transaction history drawer with copy and explorer links. |
-| `src/problem1/src/components/SwapForm.tsx` | New | Core swap state manager, form validations, and flip action. |
+| `src/problem1/src/components/SwapForm.tsx` | New | Core swap state manager, form validations, flip action, settings & transaction history triggers. |
 | `src/problem1/package.json` | New | Project dependencies and build scripts. |
 | `src/problem1/vite.config.ts` | New | Vite configuration with React plugin. |
 | `src/problem1/tsconfig.json` | New | TypeScript compiler configuration. |

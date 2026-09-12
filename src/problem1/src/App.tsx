@@ -52,11 +52,6 @@ export function App() {
     }
   };
 
-  // Reset balances to full initial balances
-  const handleResetBalances = () => {
-    handleUpdateBalances(INITIAL_USER_BALANCES);
-  };
-
   // Add transaction
   const handleAddTransaction = (tx: Transaction) => {
     setTransactions((prev) => {
@@ -137,14 +132,16 @@ export function App() {
     return () => clearInterval(interval);
   }, [loadPrices]);
 
-  // Calculate total portfolio USD value
-  const portfolioUsd = useMemo(() => {
+  // Calculate total portfolio value in base currency (USDC)
+  const portfolioUsdc = useMemo(() => {
     if (tokens.length === 0) return 0;
     const tokenPriceMap = new Map(tokens.map((t) => [t.symbol, t.price]));
     let total = 0;
     for (const [symbol, amount] of Object.entries(balances)) {
-      const price = tokenPriceMap.get(symbol) || 0;
-      total += amount * price;
+      if (amount >= 1e-6) {
+        const price = tokenPriceMap.get(symbol) || 0;
+        total += amount * price;
+      }
     }
     return total;
   }, [tokens, balances]);
@@ -160,13 +157,12 @@ export function App() {
 
       {/* Header */}
       <Header
-        portfolioUsd={portfolioUsd}
+        portfolioUsdc={portfolioUsdc}
+        tokens={tokens}
+        balances={balances}
         lastUpdated={lastUpdated}
         onResetData={handleResetAllData}
         isResetting={isRefreshing}
-        onOpenHistory={() => setIsHistoryOpen(true)}
-        onOpenSettings={() => {}}
-        txCount={transactions.length}
       />
 
       {/* Main Content */}
@@ -198,7 +194,8 @@ export function App() {
           onUpdateBalances={handleUpdateBalances}
           onAddTransaction={handleAddTransaction}
           isLoadingTokens={isLoadingTokens}
-          onResetBalances={handleResetBalances}
+          onOpenHistory={() => setIsHistoryOpen(true)}
+          txCount={transactions.length}
         />
 
         {/* Live Token Marquee / Ticker */}

@@ -204,6 +204,12 @@ body {
   50% { opacity: 0.4; transform: scale(1.4); }
 }
 
+/* Wallet Dropdown Popover */
+.wallet-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
 .wallet-badge {
   display: flex;
   align-items: center;
@@ -217,11 +223,123 @@ body {
   color: var(--text-primary);
   box-shadow: var(--shadow-sm);
   transition: var(--transition-fast);
+  cursor: pointer;
+  user-select: none;
 }
 
 .wallet-badge:hover {
-  border-color: var(--border-active);
+  border-color: var(--primary-500);
   background: var(--bg-card-hover);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+}
+
+.wallet-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 320px;
+  background: rgba(18, 24, 38, 0.96);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 24px rgba(99, 102, 241, 0.2);
+  z-index: 150;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.98);
+  transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1), transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.22s;
+  pointer-events: none;
+}
+
+/* Invisible hover bridge */
+.wallet-popover::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
+
+.wallet-wrapper:hover .wallet-popover,
+.wallet-wrapper:focus-within .wallet-popover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.wallet-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wallet-asset-count {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--primary-400);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.wallet-popover-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.wallet-token-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.wallet-token-list::-webkit-scrollbar {
+  width: 4px;
+}
+.wallet-token-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+.wallet-token-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.6rem;
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.wallet-token-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.wallet-popover-footer {
+  margin-top: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .icon-button {
@@ -933,6 +1051,10 @@ body {
   .tooltip-content {
     right: -40px;
     width: 200px;
+  }
+  .wallet-popover {
+    right: -50px;
+    width: 290px;
   }
 }
 

@@ -53,6 +53,11 @@ export function formatUsd(val: number): string {
   return `$${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
+export function formatUsdc(val: number, maxDecimals: number = 2, minDecimals: number = 2): string {
+  if (isNaN(val) || val === 0 || Math.abs(val) < 1e-6) return '0.00 USDC';
+  return `${formatCryptoAmount(val, maxDecimals, minDecimals)} USDC`;
+}
+
 export function formatRate(val: number): string {
   if (isNaN(val) || val === 0 || Math.abs(val) < 1e-6) return '0';
   if (val < 0.0001) return val.toExponential(4);
