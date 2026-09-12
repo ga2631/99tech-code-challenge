@@ -79,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
               <RotateCcw size={13} style={{ color: 'var(--accent-cyan)' }} />
               <span>Reset All Data</span>
             </div>
-            <div>Khôi phục toàn bộ số dư ví, lịch sử giao dịch và dữ liệu tỷ giá về trạng thái mặc định ban đầu.</div>
+            <div>Restore all wallet balances, transaction history, and exchange rates to their initial defaults.</div>
           </div>
         </div>
 
