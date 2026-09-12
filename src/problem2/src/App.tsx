@@ -7,8 +7,8 @@ import { INITIAL_USER_BALANCES } from './constants/tokens';
 import { fetchTokenPrices } from './services/priceService';
 import { formatUsd } from './utils/formatters';
 
-const BALANCES_STORAGE_KEY = 'currencyswap_user_balances_v2';
-const TXS_STORAGE_KEY = 'currencyswap_transactions_v2';
+const BALANCES_STORAGE_KEY = 'currencyswap_user_balances_v1';
+const TXS_STORAGE_KEY = 'currencyswap_transactions_v1';
 
 export function App() {
   const [tokens, setTokens] = useState<Token[]>([]);
@@ -106,7 +106,7 @@ export function App() {
     setTransactions([]);
     try {
       localStorage.removeItem(TXS_STORAGE_KEY);
-      localStorage.removeItem('novaswap_transactions_v1');
+      localStorage.removeItem('currencyswap_transactions_v1');
     } catch {
       // ignore
     }

@@ -1,22 +1,22 @@
-# Feature: Problem 2 - Interactive Currency Swap Form (NovaSwap)
+# Feature: Problem 2 - Interactive Currency Swap Form (CurrencySwap)
 
 ## 1. End-to-End System Flow
 
-The **NovaSwap** currency swap application facilitates asset exchanges across multiple cryptocurrency tokens through a streamlined, reactive frontend pipeline:
+The **CurrencySwap** currency swap application facilitates asset exchanges across multiple cryptocurrency tokens through a streamlined, reactive frontend pipeline:
 
 ```mermaid
 flowchart TD
     A["Price Ingestion Layer<br/>(Live Feed & Local /prices.json)"] -->|Poll / Fetch| B["Price Service & Deduplication Layer<br/>(priceService.ts)"]
     B -->|Filtered & Normalized Tokens| C["Global State (App.tsx)<br/>Portfolio Balance & Price Map"]
     C --> D["Swap Controller (SwapForm.tsx)<br/>Dynamic Quote & Validation Engine"]
-    
+
     E["User Interaction<br/>- Amount Input<br/>- Token Selector Modal<br/>- Quick % Chips<br/>- Slippage Settings"] --> D
-    
+
     D -->|Real-time Quotes| F["Swap Details Accordion<br/>- Exchange Rate<br/>- Min Received<br/>- Price Impact<br/>- Gas Fee"]
-    
+
     D -->|Click Swap Tokens| G["Review Swap Modal<br/>(ConfirmSwapModal.tsx)"]
     G -->|Confirm Execution| H["Transaction Pipeline<br/>(TransactionStatusModal.tsx)"]
-    
+
     H -->|Simulated Broadcast & Block Confirmation| I["State Commit<br/>- Deduct / Credit Balances<br/>- Append to Local History<br/>- Persist LocalStorage"]
 ```
 
@@ -81,12 +81,12 @@ While this challenge operates purely on the client-side with mock blockchain sim
     toUsd: number;
     rate: number;
     timestamp: number;
-    status: 'pending' | 'success' | 'failed';
+    status: "pending" | "success" | "failed";
   }
   ```
 - **Persistence:**
-  - `novaswap_user_balances_v1`: JSON dictionary storing token balances.
-  - `novaswap_transactions_v1`: JSON array of historical swap records.
+  - `currencyswap_user_balances_v1`: JSON dictionary storing token balances.
+  - `currencyswap_transactions_v1`: JSON array of historical swap records.
 
 ---
 
@@ -107,37 +107,37 @@ While this challenge operates purely on the client-side with mock blockchain sim
 
 ## 4. Impacted Files
 
-| File | Type | Responsibility |
-|------|------|----------------|
-| `src/problem2/public/tokens/` | New | 536+ local SVG token icons from Switcheo repo. |
-| `src/problem2/public/fonts/` | New | Local WOFF2 font files and `fonts.css` for Outfit & Plus Jakarta Sans. |
-| `src/problem2/public/prices.json` | New | Local price snapshot for offline price initialization and fallback. |
-| `src/problem2/index.html` | Modified | Local SVG favicon and local `@font-face` stylesheet links. |
-| `src/problem2/src/constants/tokens.ts` | Modified | Switched `BASE_TOKEN_ICON_URL` to local `/tokens` path and added `LOCAL_PRICES_URL`. |
-| `src/problem2/src/services/priceService.ts` | Modified | Added offline fallback to local `/prices.json` before static memory fallback. |
-| `src/problem2/src/App.tsx` | New | Main application layout, global state, portfolio calculation, price polling. |
-| `src/problem2/src/main.tsx` | New | React DOM mount entrypoint. |
-| `src/problem2/src/types/token.ts` | New | Core TypeScript type definitions for tokens, quotes, and transactions. |
-| `src/problem2/src/utils/formatters.ts` | New | Currency, crypto amounts, percentages, and hash formatters. |
-| `src/problem2/src/styles/index.css` | New | Dark theme design tokens, glassmorphic styles, and animations. |
-| `src/problem2/src/components/Header.tsx` | New | Navbar with Reset All Data button (with hover tooltip) and interactive Wallet held assets popover (USDC base currency). |
-| `src/problem2/src/components/TokenImage.tsx` | New | Dynamic token icon loader with fallback avatar. |
-| `src/problem2/src/components/TokenSelectModal.tsx` | New | Searchable token selector modal with popular chips. |
-| `src/problem2/src/components/CurrencyInputCard.tsx` | New | Amount input, balance display, and quick percentage chips. |
-| `src/problem2/src/components/SwapDetails.tsx` | New | Expandable accordion with rates, slippage, and fee breakdown. |
-| `src/problem2/src/components/SlippageSettingsModal.tsx` | New | Custom slippage and transaction deadline settings. |
-| `src/problem2/src/components/ConfirmSwapModal.tsx` | New | Order summary and final review before execution. |
-| `src/problem2/src/components/TransactionStatusModal.tsx` | New | Transaction progress spinner and success receipt. |
-| `src/problem2/src/components/TransactionHistoryModal.tsx` | New | Transaction history drawer with copy and explorer links. |
-| `src/problem2/src/components/SwapForm.tsx` | New | Core swap state manager, form validations, flip action, settings & transaction history triggers. |
-| `src/problem2/package.json` | New | Project dependencies and build scripts. |
-| `src/problem2/vite.config.ts` | New | Vite configuration with React plugin. |
-| `src/problem2/tsconfig.json` | New | TypeScript compiler configuration. |
-| `src/problem2/Dockerfile` | New | Multi-stage Docker production build with Nginx runner. |
-| `src/problem2/Dockerfile.dev` | New | Development container with live hot reload support. |
-| `src/problem2/docker-compose.yml` | New | Problem-level container orchestration. |
-| `src/problem2/docker-compose.dev.yml` | New | Problem-level live development compose config. |
-| `src/problem2/nginx.conf` | New | Nginx server config with SPA fallback, gzip, and security headers. |
-| `docker-compose.yml` | Modified | Root-level Docker Compose orchestrator. |
-| `src/problem2/README.md` | New | Problem documentation, feature walkthrough, and setup instructions. |
-| `docs/features/problem2-fancy-form.md` | New | Dedicated feature technical documentation file. |
+| File                                                      | Type     | Responsibility                                                                                                          |
+| --------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `src/problem2/public/tokens/`                             | New      | 536+ local SVG token icons from Switcheo repo.                                                                          |
+| `src/problem2/public/fonts/`                              | New      | Local WOFF2 font files and `fonts.css` for Outfit & Plus Jakarta Sans.                                                  |
+| `src/problem2/public/prices.json`                         | New      | Local price snapshot for offline price initialization and fallback.                                                     |
+| `src/problem2/index.html`                                 | Modified | Local SVG favicon and local `@font-face` stylesheet links.                                                              |
+| `src/problem2/src/constants/tokens.ts`                    | Modified | Switched `BASE_TOKEN_ICON_URL` to local `/tokens` path and added `LOCAL_PRICES_URL`.                                    |
+| `src/problem2/src/services/priceService.ts`               | Modified | Added offline fallback to local `/prices.json` before static memory fallback.                                           |
+| `src/problem2/src/App.tsx`                                | New      | Main application layout, global state, portfolio calculation, price polling.                                            |
+| `src/problem2/src/main.tsx`                               | New      | React DOM mount entrypoint.                                                                                             |
+| `src/problem2/src/types/token.ts`                         | New      | Core TypeScript type definitions for tokens, quotes, and transactions.                                                  |
+| `src/problem2/src/utils/formatters.ts`                    | New      | Currency, crypto amounts, percentages, and hash formatters.                                                             |
+| `src/problem2/src/styles/index.css`                       | New      | Dark theme design tokens, glassmorphic styles, and animations.                                                          |
+| `src/problem2/src/components/Header.tsx`                  | New      | Navbar with Reset All Data button (with hover tooltip) and interactive Wallet held assets popover (USDC base currency). |
+| `src/problem2/src/components/TokenImage.tsx`              | New      | Dynamic token icon loader with fallback avatar.                                                                         |
+| `src/problem2/src/components/TokenSelectModal.tsx`        | New      | Searchable token selector modal with popular chips.                                                                     |
+| `src/problem2/src/components/CurrencyInputCard.tsx`       | New      | Amount input, balance display, and quick percentage chips.                                                              |
+| `src/problem2/src/components/SwapDetails.tsx`             | New      | Expandable accordion with rates, slippage, and fee breakdown.                                                           |
+| `src/problem2/src/components/SlippageSettingsModal.tsx`   | New      | Custom slippage and transaction deadline settings.                                                                      |
+| `src/problem2/src/components/ConfirmSwapModal.tsx`        | New      | Order summary and final review before execution.                                                                        |
+| `src/problem2/src/components/TransactionStatusModal.tsx`  | New      | Transaction progress spinner and success receipt.                                                                       |
+| `src/problem2/src/components/TransactionHistoryModal.tsx` | New      | Transaction history drawer with copy and explorer links.                                                                |
+| `src/problem2/src/components/SwapForm.tsx`                | New      | Core swap state manager, form validations, flip action, settings & transaction history triggers.                        |
+| `src/problem2/package.json`                               | New      | Project dependencies and build scripts.                                                                                 |
+| `src/problem2/vite.config.ts`                             | New      | Vite configuration with React plugin.                                                                                   |
+| `src/problem2/tsconfig.json`                              | New      | TypeScript compiler configuration.                                                                                      |
+| `src/problem2/Dockerfile`                                 | New      | Multi-stage Docker production build with Nginx runner.                                                                  |
+| `src/problem2/Dockerfile.dev`                             | New      | Development container with live hot reload support.                                                                     |
+| `src/problem2/docker-compose.yml`                         | New      | Problem-level container orchestration.                                                                                  |
+| `src/problem2/docker-compose.dev.yml`                     | New      | Problem-level live development compose config.                                                                          |
+| `src/problem2/nginx.conf`                                 | New      | Nginx server config with SPA fallback, gzip, and security headers.                                                      |
+| `docker-compose.yml`                                      | Modified | Root-level Docker Compose orchestrator.                                                                                 |
+| `src/problem2/README.md`                                  | New      | Problem documentation, feature walkthrough, and setup instructions.                                                     |
+| `docs/features/problem2-fancy-form.md`                    | New      | Dedicated feature technical documentation file.                                                                         |

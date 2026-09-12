@@ -1,6 +1,6 @@
 services:
-  novaswap-prod:
-    container_name: problem2-novaswap
+  currencyswap-prod:
+    container_name: problem2-currencyswap
     build:
       context: .
       dockerfile: Dockerfile

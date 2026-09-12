@@ -2,7 +2,7 @@
 
 An interactive, responsive cryptocurrency swap interface built with **React**, **TypeScript**, and **Vite**.
 
-![NovaSwap Preview](./public/tokens/SWTH.svg)
+![CurrencySwap Preview](./public/tokens/SWTH.svg)
 
 ---
 
