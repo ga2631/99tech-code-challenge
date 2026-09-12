@@ -1,0 +1,78 @@
+import { UserBalance } from '../types/token';
+
+export const TOKEN_METADATA: Record<string, { name: string; decimals: number; color: string }> = {
+  ETH: { name: 'Ethereum', decimals: 18, color: '#627EEA' },
+  WBTC: { name: 'Wrapped Bitcoin', decimals: 8, color: '#F7931A' },
+  wstETH: { name: 'Wrapped Staked ETH', decimals: 18, color: '#00A3FF' },
+  USDC: { name: 'USD Coin', decimals: 6, color: '#2775CA' },
+  axlUSDC: { name: 'Axelar USD Coin', decimals: 6, color: '#2563EB' },
+  BUSD: { name: 'Binance USD', decimals: 18, color: '#F0B90B' },
+  USD: { name: 'US Dollar', decimals: 2, color: '#10B981' },
+  USC: { name: 'Carbon USD', decimals: 6, color: '#14B8A6' },
+  YieldUSD: { name: 'Yield USD', decimals: 6, color: '#8B5CF6' },
+  SWTH: { name: 'Switcheo', decimals: 8, color: '#13C2C2' },
+  rSWTH: { name: 'Reward SWTH', decimals: 8, color: '#06B6D4' },
+  ATOM: { name: 'Cosmos Hub', decimals: 6, color: '#2E3148' },
+  STATOM: { name: 'Stride Staked ATOM', decimals: 6, color: '#E11D48' },
+  RATOM: { name: 'StaFi Staked ATOM', decimals: 6, color: '#F43F5E' },
+  OSMO: { name: 'Osmosis', decimals: 6, color: '#760D89' },
+  STOSMO: { name: 'Stride Staked OSMO', decimals: 6, color: '#9333EA' },
+  LUNA: { name: 'Terra Luna', decimals: 6, color: '#FFD83D' },
+  STLUNA: { name: 'Stride Staked LUNA', decimals: 6, color: '#F59E0B' },
+  ampLUNA: { name: 'Amplified LUNA', decimals: 6, color: '#D97706' },
+  GMX: { name: 'GMX', decimals: 18, color: '#2D42FC' },
+  OKB: { name: 'OKB Token', decimals: 18, color: '#3075FF' },
+  OKT: { name: 'OKT Chain', decimals: 18, color: '#3B82F6' },
+  KUJI: { name: 'Kujira', decimals: 6, color: '#EF4444' },
+  STRD: { name: 'Stride', decimals: 6, color: '#E11D48' },
+  EVMOS: { name: 'Evmos', decimals: 18, color: '#EA580C' },
+  STEVMOS: { name: 'Stride Staked Evmos', decimals: 18, color: '#FB923C' },
+  IBCX: { name: 'ION DAO IBCX', decimals: 6, color: '#6366F1' },
+  IRIS: { name: 'IRIS Network', decimals: 6, color: '#A855F7' },
+  BLUR: { name: 'Blur', decimals: 18, color: '#FF6B00' },
+  bNEO: { name: 'Burgerswap NEO', decimals: 8, color: '#00E599' },
+  LSI: { name: 'Liquid Staking Index', decimals: 18, color: '#0284C7' },
+  ZIL: { name: 'Zilliqa', decimals: 12, color: '#29CCC4' },
+};
+
+// Generous default balances for all available tokens (~$10,000 USD each)
+export const INITIAL_USER_BALANCES: UserBalance = {
+  ETH: 5.500,
+  WBTC: 0.450,
+  wstETH: 4.800,
+  USDC: 10000.0,
+  axlUSDC: 10000.0,
+  BUSD: 10000.0,
+  USD: 10000.0,
+  USC: 10000.0,
+  YieldUSD: 10000.0,
+  SWTH: 2500000.0,
+  rSWTH: 2500000.0,
+  ATOM: 1400.0,
+  STATOM: 1200.0,
+  RATOM: 1000.0,
+  OSMO: 25000.0,
+  STOSMO: 22000.0,
+  LUNA: 25000.0,
+  STLUNA: 22000.0,
+  ampLUNA: 20000.0,
+  GMX: 275.0,
+  OKB: 230.0,
+  OKT: 750.0,
+  KUJI: 15000.0,
+  STRD: 13500.0,
+  EVMOS: 160000.0,
+  STEVMOS: 140000.0,
+  IBCX: 250.0,
+  IRIS: 550000.0,
+  BLUR: 48000.0,
+  bNEO: 1400.0,
+  LSI: 150.0,
+  ZIL: 600000.0,
+};
+export const POPULAR_TOKENS = ['ETH', 'WBTC', 'USDC', 'SWTH', 'ATOM', 'OSMO', 'GMX'];
+
+export const BASE_TOKEN_ICON_URL = '/tokens';
+export const PRICES_API_URL = 'https://interview.switcheo.com/prices.json';
+export const LOCAL_PRICES_URL = '/prices.json';
+
