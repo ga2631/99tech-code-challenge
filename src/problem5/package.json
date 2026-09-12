@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "ExpressJS & TypeScript CRUD backend server with SQLite persistence, validation, and advanced filtering",
   "main": "dist/server.js",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "rimraf dist && tsc",

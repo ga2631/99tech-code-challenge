@@ -9,7 +9,7 @@ This repository contains my submission for the Full-Stack Engineer technical cha
 | #             | Challenge                             | Focus Area                           | Status    | Documentation                      |
 | ------------- | ------------------------------------- | ------------------------------------ | --------- | ---------------------------------- |
 | **Problem 2** | Fancy Form (Currency Swap)            | Frontend / UI / State Management     | Completed | [README](./src/problem2/README.md) |
-| **Problem 4** | Three ways to sum to $n$ (Go/Backend) | System / Data Structures             | Completed | [README](./src/problem4/README.md) |
+| **Problem 4** | Three ways to sum to $n$              | Algorithms / TypeScript / Complexity | Completed | [README](./src/problem4/README.md) |
 | **Problem 5** | A Crude Server                        | Backend API / CRUD / Architecture    | Completed | [README](./src/problem5/README.md) |
 | **Problem 6** | Architecture Specification            | System Design / Security / Real-time | Completed | [README](./src/problem6/README.md) |
 
@@ -17,9 +17,11 @@ This repository contains my submission for the Full-Stack Engineer technical cha
 
 ## 🛠 Tech Stack Overview
 
-- **Frontend:** React, TypeScript, Tailwind CSS / Styled-components, Vite
-- **Backend:** Node.js / Express / TypeScript (or Go / Rust depending on sub-task), PostgreSQL / SQLite
-- **Architecture & Tooling:** Docker, ESLint, Prettier, Jest / Vitest
+- **Runtime & Environment:** Node.js (v24+ LTS) & TypeScript (v5+)
+- **Frontend:** React 18, Vite 6, Custom Vanilla CSS Design System, Lucide Icons
+- **Backend:** Express.js, SQLite with WAL Mode (`better-sqlite3`), Zod validation, Helmet, CORS, Morgan
+- **Architecture & System Design:** Distributed Redis Cluster, WebSocket / SSE, PostgreSQL, Zero-Trust Action Tickets
+- **Tooling & Containerization:** Docker (`node:24-alpine`), Docker Compose, Jest, Supertest
 
 ---
 
@@ -27,7 +29,7 @@ This repository contains my submission for the Full-Stack Engineer technical cha
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v24+ recommended)
+- [Node.js](https://nodejs.org/) (v24+ LTS recommended)
 - [Docker](https://www.docker.com/) & Docker Compose (optional, if running containerized services)
 - Package Manager: `npm`, `yarn`, or `pnpm`
 

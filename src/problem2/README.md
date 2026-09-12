@@ -24,10 +24,11 @@ An interactive, responsive cryptocurrency swap interface built with **React**, *
 
 ## 🛠 Tech Stack
 
-- **Framework:** React 18 + TypeScript + Vite 6
+- **Runtime & Language:** Node.js (v24+ LTS) & TypeScript (v5+)
+- **Framework:** React 18 + Vite 6
 - **Icons:** `lucide-react` + Switcheo Token SVGs
 - **Styling:** Custom Vanilla CSS Design System with CSS variables and glassmorphic styling
-- **Deployment & Containerization:** Docker + Nginx multi-stage build
+- **Deployment & Containerization:** Docker (`node:24-alpine`) + Nginx multi-stage build
 
 ---
 

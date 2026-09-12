@@ -73,7 +73,7 @@ flowchart TB
         WAF["WAF & Rate Limiter (IP / TLS Handshake)"]
     end
 
-    subgraph AppCluster ["Application Server Cluster (Stateless Node.js/Go)"]
+    subgraph AppCluster ["Application Server Cluster (Stateless Node.js v24+ LTS / Go)"]
         API1["API Worker 1\n(Auth + Score Controller)"]
         API2["API Worker 2\n(Auth + Score Controller)"]
         WS1["WebSocket / SSE Gateway 1"]

@@ -82,3 +82,12 @@ export function sum_to_n_c(n: number): number {
 | **A** (`sum_to_n_a`) | Closed-form Formula | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ |         None          | **Production & high-scale computation**  |
 | **B** (`sum_to_n_b`) | Iterative Loop      | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ |         None          | General procedural workloads             |
 | **C** (`sum_to_n_c`) | Recursion           | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | **High** ($n > 10^4$) | Small inputs / functional demonstrations |
+
+---
+
+## 🛠 Runtime & Testing
+
+- **Runtime & Environment:** Node.js (v24+ LTS) & TypeScript (v5+)
+- **Test Framework:** Jest / Vitest / ts-jest
+- **Test Suite:** [`index.test.ts`](./index.test.ts) validates functional correctness, identity bounds ($n=0, 1$), negative numbers, and high-scale inputs ($n = 100,000$).
+
