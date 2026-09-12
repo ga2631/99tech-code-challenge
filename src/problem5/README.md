@@ -24,13 +24,13 @@ A production-grade, extensible RESTful backend service built with **Express.js**
 
 | Component | Technology |
 |---|---|
-| **Runtime & Language** | Node.js (v18+) & TypeScript (v5+) |
+| **Runtime & Language** | Node.js (v24+ LTS) & TypeScript (v5+) |
 | **Web Framework** | Express.js |
 | **Database & Driver** | SQLite via `better-sqlite3` (WAL Mode enabled) |
 | **Validation** | Zod |
 | **Security & Utilities** | Helmet, CORS, Morgan, dotenv, UUID |
 | **Testing** | Jest, Supertest, ts-jest |
-| **Containerization** | Docker, Docker Compose |
+| **Containerization** | Docker (`node:24-alpine`), Docker Compose |
 
 ---
 
