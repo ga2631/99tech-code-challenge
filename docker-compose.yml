@@ -1,8 +1,8 @@
 services:
-  problem1:
-    container_name: 99tech-problem1-swap
+  problem2:
+    container_name: 99tech-problem2-swap
     build:
-      context: ./src/problem1
+      context: ./src/problem2
       dockerfile: Dockerfile
     ports:
       - "3000:80"

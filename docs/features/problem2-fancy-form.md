@@ -1,4 +1,4 @@
-# Feature: Problem 1 - Interactive Currency Swap Form (NovaSwap)
+# Feature: Problem 2 - Interactive Currency Swap Form (NovaSwap)
 
 ## 1. End-to-End System Flow
 
@@ -108,31 +108,31 @@ While this challenge operates purely on the client-side with mock blockchain sim
 
 | File | Type | Responsibility |
 |------|------|----------------|
-| `src/problem1/src/App.tsx` | New | Main application layout, global state, portfolio calculation, price polling. |
-| `src/problem1/src/main.tsx` | New | React DOM mount entrypoint. |
-| `src/problem1/src/types/token.ts` | New | Core TypeScript type definitions for tokens, quotes, and transactions. |
-| `src/problem1/src/constants/tokens.ts` | New | Token metadata, initial balances, and popular token definitions. |
-| `src/problem1/src/services/priceService.ts` | New | Live price fetching, fallback dataset, and timestamp deduplication. |
-| `src/problem1/src/utils/formatters.ts` | New | Currency, crypto amounts, percentages, and hash formatters. |
-| `src/problem1/src/styles/index.css` | New | Dark theme design tokens, glassmorphic styles, and animations. |
-| `src/problem1/src/components/Header.tsx` | New | Navbar with Reset All Data button (with hover tooltip) and interactive Wallet held assets popover (USDC base currency). |
-| `src/problem1/src/components/TokenImage.tsx` | New | Dynamic token icon loader with fallback avatar. |
-| `src/problem1/src/components/TokenSelectModal.tsx` | New | Searchable token selector modal with popular chips. |
-| `src/problem1/src/components/CurrencyInputCard.tsx` | New | Amount input, balance display, and quick percentage chips. |
-| `src/problem1/src/components/SwapDetails.tsx` | New | Expandable accordion with rates, slippage, and fee breakdown. |
-| `src/problem1/src/components/SlippageSettingsModal.tsx` | New | Custom slippage and transaction deadline settings. |
-| `src/problem1/src/components/ConfirmSwapModal.tsx` | New | Order summary and final review before execution. |
-| `src/problem1/src/components/TransactionStatusModal.tsx` | New | Transaction progress spinner and success receipt. |
-| `src/problem1/src/components/TransactionHistoryModal.tsx` | New | Transaction history drawer with copy and explorer links. |
-| `src/problem1/src/components/SwapForm.tsx` | New | Core swap state manager, form validations, flip action, settings & transaction history triggers. |
-| `src/problem1/package.json` | New | Project dependencies and build scripts. |
-| `src/problem1/vite.config.ts` | New | Vite configuration with React plugin. |
-| `src/problem1/tsconfig.json` | New | TypeScript compiler configuration. |
-| `src/problem1/Dockerfile` | New | Multi-stage Docker production build with Nginx runner. |
-| `src/problem1/Dockerfile.dev` | New | Development container with live hot reload support. |
-| `src/problem1/docker-compose.yml` | New | Problem-level container orchestration. |
-| `src/problem1/docker-compose.dev.yml` | New | Problem-level live development compose config. |
-| `src/problem1/nginx.conf` | New | Nginx server config with SPA fallback, gzip, and security headers. |
-| `docker-compose.yml` | New | Root-level Docker Compose orchestrator. |
-| `src/problem1/README.md` | Modified | Problem documentation, feature walkthrough, and setup instructions. |
-| `docs/features/problem1-fancy-form.md` | New | Dedicated feature technical documentation file. |
+| `src/problem2/src/App.tsx` | New | Main application layout, global state, portfolio calculation, price polling. |
+| `src/problem2/src/main.tsx` | New | React DOM mount entrypoint. |
+| `src/problem2/src/types/token.ts` | New | Core TypeScript type definitions for tokens, quotes, and transactions. |
+| `src/problem2/src/constants/tokens.ts` | New | Token metadata, initial balances, and popular token definitions. |
+| `src/problem2/src/services/priceService.ts` | New | Live price fetching, fallback dataset, and timestamp deduplication. |
+| `src/problem2/src/utils/formatters.ts` | New | Currency, crypto amounts, percentages, and hash formatters. |
+| `src/problem2/src/styles/index.css` | New | Dark theme design tokens, glassmorphic styles, and animations. |
+| `src/problem2/src/components/Header.tsx` | New | Navbar with Reset All Data button (with hover tooltip) and interactive Wallet held assets popover (USDC base currency). |
+| `src/problem2/src/components/TokenImage.tsx` | New | Dynamic token icon loader with fallback avatar. |
+| `src/problem2/src/components/TokenSelectModal.tsx` | New | Searchable token selector modal with popular chips. |
+| `src/problem2/src/components/CurrencyInputCard.tsx` | New | Amount input, balance display, and quick percentage chips. |
+| `src/problem2/src/components/SwapDetails.tsx` | New | Expandable accordion with rates, slippage, and fee breakdown. |
+| `src/problem2/src/components/SlippageSettingsModal.tsx` | New | Custom slippage and transaction deadline settings. |
+| `src/problem2/src/components/ConfirmSwapModal.tsx` | New | Order summary and final review before execution. |
+| `src/problem2/src/components/TransactionStatusModal.tsx` | New | Transaction progress spinner and success receipt. |
+| `src/problem2/src/components/TransactionHistoryModal.tsx` | New | Transaction history drawer with copy and explorer links. |
+| `src/problem2/src/components/SwapForm.tsx` | New | Core swap state manager, form validations, flip action, settings & transaction history triggers. |
+| `src/problem2/package.json` | New | Project dependencies and build scripts. |
+| `src/problem2/vite.config.ts` | New | Vite configuration with React plugin. |
+| `src/problem2/tsconfig.json` | New | TypeScript compiler configuration. |
+| `src/problem2/Dockerfile` | New | Multi-stage Docker production build with Nginx runner. |
+| `src/problem2/Dockerfile.dev` | New | Development container with live hot reload support. |
+| `src/problem2/docker-compose.yml` | New | Problem-level container orchestration. |
+| `src/problem2/docker-compose.dev.yml` | New | Problem-level live development compose config. |
+| `src/problem2/nginx.conf` | New | Nginx server config with SPA fallback, gzip, and security headers. |
+| `docker-compose.yml` | Modified | Root-level Docker Compose orchestrator. |
+| `src/problem2/README.md` | New | Problem documentation, feature walkthrough, and setup instructions. |
+| `docs/features/problem2-fancy-form.md` | New | Dedicated feature technical documentation file. |

@@ -1,6 +1,6 @@
 services:
   novaswap-dev:
-    container_name: problem1-novaswap-dev
+    container_name: problem2-novaswap-dev
     build:
       context: .
       dockerfile: Dockerfile.dev
