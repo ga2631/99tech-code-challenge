@@ -52,7 +52,7 @@ export class ResourceController {
    */
   public getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
       const resource = this.service.getResourceById(id);
 
       const response: ApiResponse<IResource> = {
@@ -72,7 +72,7 @@ export class ResourceController {
    */
   public update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
       const dto: UpdateResourceDTO = req.body;
       const updated = this.service.updateResource(id, dto);
 
@@ -94,7 +94,7 @@ export class ResourceController {
    */
   public delete = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { id } = req.params;
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
       this.service.deleteResource(id);
 
       const response: ApiResponse<null> = {
