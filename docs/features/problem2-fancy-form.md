@@ -97,6 +97,7 @@ While this challenge operates purely on the client-side with mock blockchain sim
 - **Safe Numeric Parsing & Precision Handling:** Added `parseNumericInput` and `toCleanDecimalString` to eliminate JavaScript `parseFloat("9,052.64") === 9` delimiter truncation bugs, ensuring exact integer/float math when dealing with formatted thousand-separator strings.
 - **Dust & Tiny Number Normalization (< $10^{-6}$):** Any residual micro-amounts or floating-point dust (e.g., `< 1e-6` / `...e-7`) resulting from repetitive conversions are automatically rounded/normalized to `= 0`, preventing awkward scientific notation displays (`4.0000e-7`) and ensuring clean `0.000000` balances.
 - **Unified High-Precision Crypto Formatting:** Consolidated all number & balance displays into a flexible `formatCryptoAmount(val, maxDecimals, minDecimals)` helper, supporting exact 6-decimal fixed-width formatting for balances (`formatCryptoAmount(balance, 6, 6)`) and dynamic precision for swap amounts without code duplication.
+- **Local Static Assets & Offline Zero-Dependency:** All 536+ SVG token icons from the Switcheo repository and Google Webfonts (`Outfit` & `Plus Jakarta Sans` in WOFF2 format) are bundled locally in `src/problem2/public/tokens/` and `src/problem2/public/fonts/`. Live prices fallback automatically to `src/problem2/public/prices.json`, allowing the application to run 100% offline with zero CDN network latency and instant icon rendering.
 - **Price Feed Timestamp Deduplication:** The Switcheo API returns multiple entries for identical currencies across different timestamps. The ingestion layer applies $O(N)$ dictionary deduplication to select the latest valid price.
 - **Graceful Asset Image Fallback:** `TokenImage.tsx` automatically detects network/SVG loading failures and renders a stylized brand-colored monogram avatar without broken image icons.
 - **Micro-animations & GPU Acceleration:** CSS transforms (`translateY`, `scale`, `rotate(180deg)`) and CSS variables ensure 60fps animations with hardware acceleration for cards, modals, and spinners.
@@ -108,11 +109,15 @@ While this challenge operates purely on the client-side with mock blockchain sim
 
 | File | Type | Responsibility |
 |------|------|----------------|
+| `src/problem2/public/tokens/` | New | 536+ local SVG token icons from Switcheo repo. |
+| `src/problem2/public/fonts/` | New | Local WOFF2 font files and `fonts.css` for Outfit & Plus Jakarta Sans. |
+| `src/problem2/public/prices.json` | New | Local price snapshot for offline price initialization and fallback. |
+| `src/problem2/index.html` | Modified | Local SVG favicon and local `@font-face` stylesheet links. |
+| `src/problem2/src/constants/tokens.ts` | Modified | Switched `BASE_TOKEN_ICON_URL` to local `/tokens` path and added `LOCAL_PRICES_URL`. |
+| `src/problem2/src/services/priceService.ts` | Modified | Added offline fallback to local `/prices.json` before static memory fallback. |
 | `src/problem2/src/App.tsx` | New | Main application layout, global state, portfolio calculation, price polling. |
 | `src/problem2/src/main.tsx` | New | React DOM mount entrypoint. |
 | `src/problem2/src/types/token.ts` | New | Core TypeScript type definitions for tokens, quotes, and transactions. |
-| `src/problem2/src/constants/tokens.ts` | New | Token metadata, initial balances, and popular token definitions. |
-| `src/problem2/src/services/priceService.ts` | New | Live price fetching, fallback dataset, and timestamp deduplication. |
 | `src/problem2/src/utils/formatters.ts` | New | Currency, crypto amounts, percentages, and hash formatters. |
 | `src/problem2/src/styles/index.css` | New | Dark theme design tokens, glassmorphic styles, and animations. |
 | `src/problem2/src/components/Header.tsx` | New | Navbar with Reset All Data button (with hover tooltip) and interactive Wallet held assets popover (USDC base currency). |

@@ -70,8 +70,9 @@ export const INITIAL_USER_BALANCES: UserBalance = {
   LSI: 150.0,
   ZIL: 600000.0,
 };
-
 export const POPULAR_TOKENS = ['ETH', 'WBTC', 'USDC', 'SWTH', 'ATOM', 'OSMO', 'GMX'];
 
-export const BASE_TOKEN_ICON_URL = 'https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens';
+export const BASE_TOKEN_ICON_URL = '/tokens';
 export const PRICES_API_URL = 'https://interview.switcheo.com/prices.json';
+export const LOCAL_PRICES_URL = '/prices.json';
+

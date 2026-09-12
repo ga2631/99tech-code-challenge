@@ -1,5 +1,5 @@
 import { RawPriceItem, Token } from '../types/token';
-import { BASE_TOKEN_ICON_URL, PRICES_API_URL, TOKEN_METADATA } from '../constants/tokens';
+import { BASE_TOKEN_ICON_URL, LOCAL_PRICES_URL, PRICES_API_URL, TOKEN_METADATA } from '../constants/tokens';
 
 const FALLBACK_PRICES: RawPriceItem[] = [
   { currency: 'ETH', date: '2023-08-29T07:10:52.000Z', price: 1645.9337 },
@@ -34,8 +34,16 @@ export async function fetchTokenPrices(): Promise<{ tokens: Token[]; lastUpdated
     }
     rawData = await response.json();
   } catch (err) {
-    console.warn('Failed to fetch live prices from Switcheo API, falling back to cached prices:', err);
-    rawData = FALLBACK_PRICES;
+    try {
+      const localResponse = await fetch(LOCAL_PRICES_URL);
+      if (localResponse.ok) {
+        rawData = await localResponse.json();
+      } else {
+        rawData = FALLBACK_PRICES;
+      }
+    } catch {
+      rawData = FALLBACK_PRICES;
+    }
   }
 
   // Deduplicate by latest timestamp and valid price
