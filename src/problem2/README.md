@@ -36,21 +36,25 @@ An interactive, responsive cryptocurrency swap interface built with **React**, *
 ### Option 1: Run Production Build with Docker (Recommended)
 
 From the project root directory:
+
 ```bash
 # Start Problem 2 via root docker-compose
 docker compose up problem2 -d
 ```
 
 Or from inside `src/problem2`:
+
 ```bash
 cd src/problem2
 
 # Build and start container in detached mode
 docker compose up --build -d
 ```
-Access the application at: **`http://localhost:3000`**
+
+Access the application at: **`http://localhost:8080`**
 
 To stop the container:
+
 ```bash
 docker compose down
 ```
@@ -60,6 +64,7 @@ docker compose down
 ### Option 2: Run Development Mode with Hot-Reload in Docker
 
 If you don't have Node.js installed locally but want to develop with live hot-reloading:
+
 ```bash
 cd src/problem2
 docker compose -f docker-compose.dev.yml up --build
